@@ -1,6 +1,6 @@
 #pragma once
-#include "../GL.h"
-#include "../Transformation.h"
+#include "../../core/GL.h"
+#include "../../core/Transformation.h"
 #include "../camera/Camera.h"
 
 namespace PixelBit {

@@ -2,7 +2,10 @@
 #include <functional>
 
 // #define SHADER_VALIDATE
-#include "../engine/PixelBit.h"
+#include "../engine/core/PixelBit.h"
+#include "../engine/extensions/loaders/OBJLoader.h"
+#include "../engine/extensions/controls/PerspectiveFly.h"
+#include "../engine/extensions/camera/PerspectiveCamera.h"
 
 class GameLogic: public PixelBit::ApplicationLogic {
 private:

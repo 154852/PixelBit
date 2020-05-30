@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <functional>
-#include "../mesh/Mesh.h"
-#include "../shader/Shader.h"
+#include "../../core/mesh/Mesh.h"
+#include "../../core/shader/Shader.h"
 #include <string>
 
 namespace PixelBit {
