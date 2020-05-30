@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Texture.h"
-#include "Window.h"
+#include "../Window.h"
 #include <functional>
 
 namespace PixelBit {

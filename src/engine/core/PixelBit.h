@@ -3,6 +3,6 @@
 #include "Input.h"
 #include "mesh/Mesh.h"
 #include "shader/Shader.h"
-#include "Texture.h"
-#include "Framebuffer.h"
+#include "texture/Texture.h"
+#include "texture/Framebuffer.h"
 #include "Transformation.h"

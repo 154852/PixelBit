@@ -6,7 +6,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include "../mesh/Mesh.h"
-#include "../Texture.h"
+#include "../texture/Texture.h"
 
 namespace PixelBit {
 	class Shader {
