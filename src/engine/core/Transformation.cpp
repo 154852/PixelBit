@@ -11,7 +11,7 @@ Transformation::Transformation(glm::vec3 position, glm::vec3 rotation, glm::vec3
 	m_rotation = rotation;
 	m_scale = scale;
 
-	m_model_matrix = glm::mat4();
+	m_model_matrix = glm::identity<glm::mat4>();
 }
 
 Transformation::Transformation(): Transformation(glm::vec3(0), glm::vec3(0), glm::vec3(1)) {}
