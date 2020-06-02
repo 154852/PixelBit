@@ -48,17 +48,21 @@ namespace PixelBit {
 			static Material& from(std::string textureSource, Loader::OBJLoader::OBJMaterial& material);
 		};
 
-		class SceneNode {
+		class SceneNode: public Renderable {
 		private:
-			Mesh& m_mesh;
+			Renderable* m_node;
 			Transformation& m_transform;
 			Material& m_material;
+			Shader* m_shader { NULL };
 		public:
-			SceneNode(Mesh& mesh, Material& material);
-			void render(Shader& shader);
+			SceneNode(Renderable* node, Material& material);
+			virtual void render(glm::mat4* parent = NULL) override;
 
-			Mesh& mesh() const;
-			void set_mesh(Mesh& mesh);
+			Renderable* renderable() const;
+			void set_renderable(Renderable* renderable);
+
+			Shader* shader() const;
+			void set_shader(Shader* shader);
 
 			Transformation& transform();
 			Material& material();
@@ -93,19 +97,22 @@ namespace PixelBit {
 		    PointLight(glm::vec3 pos, float intensity);
 		};
 
-		class Scene {
+		class Scene: public Renderable {
 		private:
 			std::vector<SceneNode*> m_nodes;
 			DirectionalLight m_directional;
 			std::vector<PointLight*> m_point_lights;
 			Shader* m_shader;
 			PerspectiveCamera m_camera;
+			Transformation* m_transform;
 		public:
 			Scene(PerspectiveCamera& camera);
 			void add(SceneNode* mesh);
 			void add(PointLight* mesh);
 			void compile();
-			void render();
+			virtual void render(glm::mat4* parent = NULL) override;
+
+			Transformation* transform() const;
 
 			PerspectiveCamera* camera();
 		};

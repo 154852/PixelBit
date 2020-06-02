@@ -26,9 +26,7 @@ VertexBuffer& Mesh::indices(int data[], int length) {
 	m_vertex_count = length;
 
 	bind();
-	int id;
-	glGenBuffers(1, (GLuint*) &id);
-	VertexBuffer* buffer = new VertexBuffer(id, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, 1);
+	VertexBuffer* buffer = new VertexBuffer(VertexBuffer::gen_id(), GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, 1);
 	m_buffers.push_back(buffer);
 	buffer->index_data(data, length);
 	Mesh::unbind();
@@ -40,9 +38,7 @@ VertexBuffer& Mesh::vertex_buffer(float data[], int length, int cellLength) {
 	if (m_buffers.empty()) throw std::runtime_error("Indices must be the first buffer added");
 	
 	bind();
-	int id;
-	glGenBuffers(1, (GLuint*) &id);
-	VertexBuffer* buffer = new VertexBuffer(id, GL_STATIC_DRAW, GL_ARRAY_BUFFER, 1);
+	VertexBuffer* buffer = new VertexBuffer(VertexBuffer::gen_id(), GL_STATIC_DRAW, GL_ARRAY_BUFFER, 1);
 	m_buffers.push_back(buffer);
 	buffer->data(data, length, cellLength, m_idx++);
 	Mesh::unbind();
@@ -50,7 +46,7 @@ VertexBuffer& Mesh::vertex_buffer(float data[], int length, int cellLength) {
 	return *buffer;
 }
 
-void Mesh::render() {
+void Mesh::render(glm::mat4* parent) {
 	bind();
 	glDrawElements(GL_TRIANGLES, m_vertex_count, GL_UNSIGNED_INT, 0);
 }

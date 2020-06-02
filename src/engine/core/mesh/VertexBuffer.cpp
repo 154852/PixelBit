@@ -53,4 +53,10 @@ void VertexBuffer::set_bound(int type, int id) {
 	}
 }
 
+int VertexBuffer::gen_id() {
+	int id;
+	glGenBuffers(1, (GLuint*) &id);
+	return id;
+}
+
 }

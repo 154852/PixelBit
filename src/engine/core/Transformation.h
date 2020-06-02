@@ -20,11 +20,13 @@ namespace PixelBit {
 		
 		glm::mat4 matrix() const;
 		glm::mat4 matrix(bool update);
+		const glm::mat4* matrix_a() const;
+		glm::mat4* matrix_a(bool update);
 		
 		glm::vec3 position() const;
 		glm::vec3 rotation() const;
 		glm::vec3 scale() const;
-		
+
 		Transformation& translate(float x, float y, float z);
 		Transformation& position(float x, float y, float z);
 		Transformation& position(glm::vec3 pos);

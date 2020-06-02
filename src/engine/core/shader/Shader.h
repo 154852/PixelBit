@@ -48,7 +48,7 @@ namespace PixelBit {
 
 		Shader& texture(Texture& tex, int location);
 
-		void render(Mesh& mesh);
+		void render(Mesh& mesh, glm::mat4* parent = NULL);
 
 		void bind();
 		static void unbind();

@@ -28,5 +28,7 @@ namespace PixelBit {
 
 		void bind();
 		static void unbind();
+
+		static int gen_id();
 	};
 }

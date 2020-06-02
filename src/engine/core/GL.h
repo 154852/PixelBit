@@ -8,6 +8,11 @@
 #include "Window.h"
 
 namespace PixelBit {
+	class Renderable {
+	public:
+		virtual void render(glm::mat4* parent = NULL) = 0;
+	};
+
 	class GL;
 
 	class ApplicationLogic {

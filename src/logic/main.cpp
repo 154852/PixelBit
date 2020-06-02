@@ -23,13 +23,15 @@ public:
 		PixelBit::Loader::OBJLoader::load("assets/models/jet2/Airplane.obj", [this](PixelBit::Mesh* mesh, PixelBit::Loader::OBJLoader::OBJMaterial& material) {
 			PixelBit::LightScene::Material& mat = PixelBit::LightScene::Material::from("assets/models/jet2/", material);
 			mat.set_texture_transform(PixelBit::LightScene::TextureTransform::REVERSE_Y);
-			m_scene.add(new PixelBit::LightScene::SceneNode(*mesh, mat));
+			m_scene.add(new PixelBit::LightScene::SceneNode(mesh, mat));
 		});
 
 		m_scene.add(new PixelBit::LightScene::PointLight(glm::vec3(0, 10, 0), 2.0f));
 
 		m_scene.compile();
 		m_scene.camera()->transform().translate(0, 0, 10);
+
+		m_scene.transform()->rotation(0, 0, 3.14159f / 2.0f).update();
 	}
 
 	virtual void animate(PixelBit::GL& gl) override {
@@ -38,6 +40,7 @@ public:
 			m_scene.camera()->update_projection(gl.window());
 		}
 		gl.clear();
+
 
 		m_controls.update(m_scene.camera());
 		m_scene.render();

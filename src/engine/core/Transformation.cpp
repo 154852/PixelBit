@@ -49,6 +49,12 @@ glm::mat4 Transformation::matrix(bool update) {
 	if (update) this->update();
 	return m_model_matrix;
 }
+const glm::mat4* Transformation::matrix_a() const { return &m_model_matrix; }
+glm::mat4* Transformation::matrix_a(bool update) {
+	if (update) this->update();
+	return &m_model_matrix;
+}
+
 glm::vec3 Transformation::position() const { return m_position; }
 glm::vec3 Transformation::rotation() const { return m_rotation; }
 glm::vec3 Transformation::scale() const { return m_scale; }

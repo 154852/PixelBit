@@ -136,7 +136,7 @@ Shader& Shader::uniform(std::string name, glm::vec4 data) {
 	return *this;
 }
 
-void Shader::render(Mesh& mesh) {
+void Shader::render(Mesh& mesh, glm::mat4* parent) {
 	bind();
 	
 #ifdef SHADER_VALIDATE
@@ -151,7 +151,7 @@ void Shader::render(Mesh& mesh) {
 	}
 #endif
 
-	mesh.render();
+	mesh.render(parent);
 	Shader::unbind();
 }
 

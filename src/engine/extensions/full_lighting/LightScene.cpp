@@ -50,17 +50,20 @@ void LightScene::Material::apply(Shader& shader) {
 	shader.uniform<float>("material.shininess", m_shininess);
 }
 
-LightScene::SceneNode::SceneNode(Mesh& mesh, Material& material):
-	m_mesh(mesh), m_material(material), m_transform(*(new Transformation())) {}
+LightScene::SceneNode::SceneNode(Renderable* mesh, Material& material):
+	m_node(mesh), m_material(material), m_transform(*(new Transformation())) {}
 
-void LightScene::SceneNode::render(Shader& shader) {
-	m_material.apply(shader);
-	shader.uniform("model", m_transform.matrix());
-	shader.render(m_mesh);
+void LightScene::SceneNode::set_shader(Shader *shader) { m_shader = shader; }
+Shader* LightScene::SceneNode::shader() const { return m_shader; }
+
+void LightScene::SceneNode::render(glm::mat4* parent) {
+	m_material.apply(*m_shader);
+	(*m_shader).uniform("model", parent == NULL? m_transform.matrix():((*parent) * m_transform.matrix()));
+	m_node->render(parent);
 }
 
-Mesh& LightScene::SceneNode::mesh() const { return m_mesh; }
-void LightScene::SceneNode::set_mesh(Mesh& mesh) { m_mesh = mesh; }
+Renderable* LightScene::SceneNode::renderable() const { return m_node; }
+void LightScene::SceneNode::set_renderable(Renderable* mesh) { m_node = mesh; }
 
 Transformation& LightScene::SceneNode::transform() { return m_transform; }
 LightScene::Material& LightScene::SceneNode::material() { return m_material; }
@@ -88,7 +91,9 @@ LightScene::PointLight::PointLight() {}
 LightScene::PointLight::PointLight(glm::vec3 pos): position(pos) {}
 LightScene::PointLight::PointLight(glm::vec3 pos, float intensity): position(pos), constant(intensity) {}
 
-LightScene::Scene::Scene(PerspectiveCamera& camera): m_camera(camera) {}
+LightScene::Scene::Scene(PerspectiveCamera& camera): m_camera(camera), m_transform(new Transformation()) {}
+
+Transformation* LightScene::Scene::transform() const { return m_transform; }
 
 void LightScene::Scene::compile() {
 	std::string replacement = std::to_string(m_point_lights.size());
@@ -102,13 +107,17 @@ void LightScene::Scene::compile() {
 	}
 
 	m_shader = &Shader::create(read_file("assets/shaders/full_light/vertex.v.glsl"), fragment);
+
+	for (int i = 0; i < m_nodes.size(); i++) m_nodes[i]->set_shader(m_shader);
 }
 
 void LightScene::Scene::add(SceneNode* mesh) { m_nodes.push_back(mesh); }
 void LightScene::Scene::add(LightScene::PointLight* light) { m_point_lights.push_back(light); }
 PerspectiveCamera* LightScene::Scene::camera() { return &m_camera; }
 
-void LightScene::Scene::render() {
+void LightScene::Scene::render(glm::mat4* parent) {
+	glm::mat4 newParent = parent == NULL? m_transform->matrix():((*parent) * m_transform->matrix());
+
 	m_shader->uniform("projection", m_camera.projection())
 		.uniform("view", m_camera.view(true))
 		.uniform("viewPos", m_camera.transform().position());
@@ -117,7 +126,7 @@ void LightScene::Scene::render() {
 
 	for (int i = 0; i < m_point_lights.size(); i++) m_point_lights[i]->apply(concat("sis", "pointLights[", i, "]"), *m_shader);
 
-	for (int i = 0; i < m_nodes.size(); i++) m_nodes[i]->render(*m_shader);
+	for (int i = 0; i < m_nodes.size(); i++) m_nodes[i]->render(&newParent);
 }
 
 };
