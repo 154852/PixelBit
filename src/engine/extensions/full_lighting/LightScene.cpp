@@ -51,21 +51,22 @@ void LightScene::Material::apply(Shader& shader) {
 }
 
 LightScene::SceneNode::SceneNode(Renderable* mesh, Material& material):
-	m_node(mesh), m_material(material), m_transform(*(new Transformation())) {}
+	m_node(mesh), m_material(material) {
+		m_transform = new Transformation();
+	}
 
 void LightScene::SceneNode::set_shader(Shader *shader) { m_shader = shader; }
 Shader* LightScene::SceneNode::shader() const { return m_shader; }
 
 void LightScene::SceneNode::render(glm::mat4* parent) {
 	m_material.apply(*m_shader);
-	(*m_shader).uniform("model", parent == NULL? m_transform.matrix():((*parent) * m_transform.matrix()));
+	(*m_shader).uniform("model", parent == NULL? m_transform->matrix():((*parent) * m_transform->matrix()));
 	m_node->render(parent);
 }
 
 Renderable* LightScene::SceneNode::renderable() const { return m_node; }
 void LightScene::SceneNode::set_renderable(Renderable* mesh) { m_node = mesh; }
 
-Transformation& LightScene::SceneNode::transform() { return m_transform; }
 LightScene::Material& LightScene::SceneNode::material() { return m_material; }
 
 void LightScene::DirectionalLight::apply(std::string name, Shader& shader) {

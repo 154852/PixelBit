@@ -48,10 +48,9 @@ namespace PixelBit {
 			static Material& from(std::string textureSource, Loader::OBJLoader::OBJMaterial& material);
 		};
 
-		class SceneNode: public Renderable {
+		class SceneNode: public Renderable, public Transformable {
 		private:
 			Renderable* m_node;
-			Transformation& m_transform;
 			Material& m_material;
 			Shader* m_shader { NULL };
 		public:
@@ -64,7 +63,6 @@ namespace PixelBit {
 			Shader* shader() const;
 			void set_shader(Shader* shader);
 
-			Transformation& transform();
 			Material& material();
 		};
 
