@@ -12,7 +12,6 @@ namespace PixelBit {
 		Transformation m_transformation;
 	public:
 		virtual glm::mat4 projection() override;
-		virtual Transformation& transform() override;
 		virtual glm::mat4 view() override;
 		virtual void update_view() override;
 

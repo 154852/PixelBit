@@ -45,4 +45,12 @@ void debug_matrix(glm::mat4 matrix) {
 		std::cout << "|" << matrix[0][i] << " " << matrix[1][i] << " " << matrix[2][i] << " " << matrix[3][i] << "|" << std::endl;
 	std::cout << std::endl;
 }
+
+void debug_vector(glm::vec4 vector) {
+	std::cout << "(" << vector[0] << ", " << vector[1] << ", " << vector[2] << ", " << vector[3] << ")" << std::endl;
+}
+
+void debug_vector(glm::vec3 vector) {
+	std::cout << "(" << vector[0] << ", " << vector[1] << ", " << vector[2] << ")" << std::endl;
+}
 }

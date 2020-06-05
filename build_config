@@ -1,0 +1,12 @@
+#invoke with `cpp-build -w build_config`
+
+library(glfw)
+framework(OpenGL)
+library(glew)
+
+optimise(3)
+std(c++11)
+
+source(src)
+
+executable(PixelBit.out)

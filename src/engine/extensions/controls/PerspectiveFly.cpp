@@ -53,13 +53,13 @@ Transformation& PerspectiveFly::update(Transformation& transformation) {
 	if (glm::length(translation) != 0) transformation.forwards(glm::normalize(translation) * m_speed);
 
 	glm::vec2 pos = m_gl.input().cursor_motion();
-	transformation.rotate(pos.y * m_rotation_sensitivity, pos.x * m_rotation_sensitivity, 0);
+	transformation.add_euler(pos.y * m_rotation_sensitivity, pos.x * m_rotation_sensitivity, 0);
 
 	return transformation;
 }
 
 void PerspectiveFly::update(Camera* camera) {
-	update(camera->transform());
+	update(*camera->transform());
 }
 
 };

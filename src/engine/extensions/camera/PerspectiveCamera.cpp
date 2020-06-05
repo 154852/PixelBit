@@ -1,10 +1,12 @@
 #include "PerspectiveCamera.h"
 
+#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace PixelBit {
 
 PerspectiveCamera::PerspectiveCamera(Window& window) {
+	m_transform = new Transformation();
 	update_projection(window); update_view();
 }
 
@@ -14,7 +16,7 @@ PerspectiveCamera& PerspectiveCamera::update_projection(Window& window) {
 }
 
 void PerspectiveCamera::update_view() {
-	m_transformation.update_rotate_neg_translate();
+	m_transform->update_rotate_neg_translate();
 }
 
 void PerspectiveCamera::set_near(float z_near) { m_znear = z_near; }
@@ -33,16 +35,12 @@ glm::mat4 PerspectiveCamera::projection(Window& window) {
 	return m_projection_matrix;
 }
 
-Transformation& PerspectiveCamera::transform() {
-	return m_transformation;
-}
-
 glm::mat4 PerspectiveCamera::view() {
-	return m_transformation.matrix();
+	return m_transform->matrix();
 }
 
 glm::mat4 PerspectiveCamera::view(bool update) {
 	if (update) update_view();
-	return m_transformation.matrix();
+	return m_transform->matrix();
 }
 };

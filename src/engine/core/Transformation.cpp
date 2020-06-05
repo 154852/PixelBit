@@ -8,8 +8,8 @@ namespace PixelBit {
 
 Transformation::Transformation(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 	m_position = position;
-	m_rotation = rotation;
 	m_scale = scale;
+	m_rotation_q = glm::quat(rotation);
 
 	m_model_matrix = glm::identity<glm::mat4>();
 }
@@ -18,27 +18,21 @@ Transformation::Transformation(): Transformation(glm::vec3(0), glm::vec3(0), glm
 
 Transformation& Transformation::update() {
 	m_model_matrix = glm::translate(glm::mat4(1.0f), m_position);
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.x, glm::vec3(1, 0, 0));
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.y, glm::vec3(0, 1, 0));
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.z, glm::vec3(0, 0, 1));
+	m_model_matrix = m_model_matrix * glm::toMat4(m_rotation_q);
 	m_model_matrix = glm::scale(m_model_matrix, m_scale);
 
 	return *this;
 }
 
 Transformation& Transformation::update_rotate_translate() {
-	m_model_matrix = glm::rotate(glm::mat4(1.0f), m_rotation.x, glm::vec3(1, 0, 0));
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.y, glm::vec3(0, 1, 0));
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.z, glm::vec3(0, 0, 1));
+	m_model_matrix = glm::toMat4(m_rotation_q);
 	m_model_matrix = glm::translate(m_model_matrix, m_position);
 
 	return *this;
 }
 
 Transformation& Transformation::update_rotate_neg_translate() {
-	m_model_matrix = glm::rotate(glm::mat4(1.0f), m_rotation.x, glm::vec3(1, 0, 0));
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.y, glm::vec3(0, 1, 0));
-	m_model_matrix = glm::rotate(m_model_matrix, m_rotation.z, glm::vec3(0, 0, 1));
+	m_model_matrix = glm::toMat4(m_rotation_q);
 	m_model_matrix = glm::translate(m_model_matrix, -m_position);
 
 	return *this;
@@ -56,7 +50,8 @@ glm::mat4* Transformation::matrix_a(bool update) {
 }
 
 glm::vec3 Transformation::position() const { return m_position; }
-glm::vec3 Transformation::rotation() const { return m_rotation; }
+glm::quat Transformation::rotation() const { return m_rotation_q; }
+glm::vec3 Transformation::rotation_euler() const { return glm::eulerAngles(m_rotation_q); }
 glm::vec3 Transformation::scale() const { return m_scale; }
 
 Transformation& Transformation::translate(float x, float y, float z) {
@@ -74,18 +69,18 @@ Transformation& Transformation::position(glm::vec3 pos) {
 	return *this;
 }
 
-Transformation& Transformation::rotate(float x, float y, float z) {
-	m_rotation += glm::vec3(x, y, z);
+Transformation& Transformation::add_euler(float x, float y, float z) {
+	m_rotation_q = glm::quat(rotation_euler() + glm::vec3(x, y, z));
 	return *this;
 }
 
-Transformation& Transformation::rotation(float x, float y, float z) {
-	m_rotation = glm::vec3(x, y, z);
+Transformation& Transformation::set_euler(float x, float y, float z) {
+	m_rotation_q = glm::quat(glm::vec3(x, y, z));
 	return *this;
 }
 
-Transformation& Transformation::rotation(glm::vec3 rot) {
-	m_rotation = rot;
+Transformation& Transformation::rotation(glm::quat rot) {
+	m_rotation_q = rot;
 	return *this;
 }
 
@@ -114,19 +109,46 @@ Transformation& Transformation::forwards(glm::vec3 offset) {
 }
 
 Transformation& Transformation::forwards(float x, float y, float z) {
+	float rotationY = rotation_euler().y;
+
 	if (z != 0) {
-		m_position.x += sin(m_rotation.y) * -z;
-		m_position.z += cos(m_rotation.y) * z;
+		m_position.x += sin(rotationY) * -z;
+		m_position.z += cos(rotationY) * z;
 	}
 
 	if (x != 0) {
-		m_position.x += sin(m_rotation.y - M_PI_2) * -x;
-		m_position.z += cos(m_rotation.y - M_PI_2) * x;
+		m_position.x += sin(rotationY - M_PI_2) * -x;
+		m_position.z += cos(rotationY - M_PI_2) * x;
 	}
 
 	m_position.y += y;
 
 	return *this;
+}
+
+Transformation& Transformation::full_forwards(float x, float y, float z) {
+	m_position += glm::inverse(m_rotation_q) * glm::vec3(x, y, z);
+
+	return *this;
+}
+
+Transformation& Transformation::relative_rotate(glm::vec3 axis, float angle) {
+	glm::quat update = glm::angleAxis(angle, axis);
+	m_rotation_q = update * m_rotation_q ;
+
+	return *this;
+}
+
+Transformation& Transformation::relative_rotate_x(float angle) {
+	return relative_rotate(glm::vec3(1.0f, 0, 0), angle);
+}
+
+Transformation& Transformation::relative_rotate_y(float angle) {
+	return relative_rotate(glm::vec3(0, 1.0f, 0), angle);
+}
+
+Transformation& Transformation::relative_rotate_z(float angle) {
+	return relative_rotate(glm::vec3(0, 0, 1.0f), angle);
 }
 
 glm::mat4 Transformation::model_view(glm::mat4 view, bool update) {

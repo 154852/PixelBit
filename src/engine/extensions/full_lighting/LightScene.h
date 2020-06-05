@@ -97,22 +97,19 @@ namespace PixelBit {
 		    PointLight(glm::vec3 pos, float intensity);
 		};
 
-		class Scene: public Renderable {
+		class Scene: public Renderable, public Transformable {
 		private:
 			std::vector<SceneNode*> m_nodes;
 			DirectionalLight m_directional;
 			std::vector<PointLight*> m_point_lights;
 			Shader* m_shader;
 			PerspectiveCamera m_camera;
-			Transformation* m_transform;
 		public:
 			Scene(PerspectiveCamera& camera);
 			void add(SceneNode* mesh);
 			void add(PointLight* mesh);
 			void compile();
 			virtual void render(glm::mat4* parent = NULL) override;
-
-			Transformation* transform() const;
 
 			PerspectiveCamera* camera();
 		};

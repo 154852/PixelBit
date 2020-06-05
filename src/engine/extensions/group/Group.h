@@ -5,7 +5,7 @@
 
 namespace PixelBit {
 
-class Group: public Renderable {
+class Group: public Renderable, public Transformable {
 private:
 	std::vector<Renderable*> m_children;
 	Transformation* m_transform;
@@ -14,8 +14,6 @@ public:
 
 	void add(Renderable*);
 	virtual void render(glm::mat4* parent = NULL) override;
-
-	Transformation* transform() const;
 };
 
 };

@@ -91,9 +91,9 @@ LightScene::PointLight::PointLight() {}
 LightScene::PointLight::PointLight(glm::vec3 pos): position(pos) {}
 LightScene::PointLight::PointLight(glm::vec3 pos, float intensity): position(pos), constant(intensity) {}
 
-LightScene::Scene::Scene(PerspectiveCamera& camera): m_camera(camera), m_transform(new Transformation()) {}
-
-Transformation* LightScene::Scene::transform() const { return m_transform; }
+LightScene::Scene::Scene(PerspectiveCamera& camera): m_camera(camera) {
+	m_transform = new Transformation();
+}
 
 void LightScene::Scene::compile() {
 	std::string replacement = std::to_string(m_point_lights.size());
@@ -120,7 +120,7 @@ void LightScene::Scene::render(glm::mat4* parent) {
 
 	m_shader->uniform("projection", m_camera.projection())
 		.uniform("view", m_camera.view(true))
-		.uniform("viewPos", m_camera.transform().position());
+		.uniform("viewPos", m_camera.transform()->position());
 
 	m_directional.apply("dirLight", *m_shader);
 

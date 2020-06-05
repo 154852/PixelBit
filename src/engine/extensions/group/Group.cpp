@@ -3,7 +3,6 @@
 namespace PixelBit {
 
 Group::Group(): m_transform(new Transformation()) {}
-Transformation* Group::transform() const { return m_transform; }
 void Group::add(Renderable* obj) { m_children.push_back(obj); }
 
 void Group::render(glm::mat4* parent) {
