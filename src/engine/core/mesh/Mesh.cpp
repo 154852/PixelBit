@@ -69,6 +69,13 @@ Mesh& Mesh::plane() {
 		-1,  1, 0
 	}, 3 * 4, 3);
 
+	mesh->vertex_buffer((float[12]) {
+		0, 0, 1,
+		0, 0, 1,
+		0, 0, 1,
+		0, 0, 1
+	}, 3 * 4, 3);
+
 	mesh->vertex_buffer((float[8]) {
 		0, 1,
 		1, 1,

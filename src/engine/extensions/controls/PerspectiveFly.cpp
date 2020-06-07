@@ -1,4 +1,5 @@
 #include "PerspectiveFly.h"
+#include "../../core/Utils.h"
 #include <iostream>
 
 namespace PixelBit {
@@ -53,7 +54,8 @@ Transformation& PerspectiveFly::update(Transformation& transformation) {
 	if (glm::length(translation) != 0) transformation.forwards(glm::normalize(translation) * m_speed);
 
 	glm::vec2 pos = m_gl.input().cursor_motion();
-	transformation.add_euler(pos.y * m_rotation_sensitivity, pos.x * m_rotation_sensitivity, 0);
+	transformation.relative_rotate_x(pos.y * m_rotation_sensitivity);
+	transformation.world_rotate_y(pos.x * m_rotation_sensitivity);
 
 	return transformation;
 }

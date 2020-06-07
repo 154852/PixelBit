@@ -27,7 +27,7 @@ namespace PixelBit {
 		glm::mat4* matrix_a(bool update);
 		
 		glm::vec3 position() const;
-		glm::quat rotation() const;
+		glm::quat rotation();
 		glm::vec3 rotation_euler() const;
 		glm::vec3 scale() const;
 
@@ -47,12 +47,18 @@ namespace PixelBit {
 
 		Transformation& forwards(glm::vec3 offset);
 		Transformation& forwards(float x, float y, float z);
+		Transformation& full_forwards(glm::vec3 offset);
 		Transformation& full_forwards(float x, float y, float z);
+		Transformation& full_forwards(glm::vec3 offset, glm::vec3 axis_multiplier);
 
 		Transformation& relative_rotate(glm::vec3 axis, float angle);
 		Transformation& relative_rotate_x(float angle);
 		Transformation& relative_rotate_y(float angle);
 		Transformation& relative_rotate_z(float angle);
+		Transformation& world_rotate(glm::vec3 axis, float angle);
+		Transformation& world_rotate_x(float angle);
+		Transformation& world_rotate_y(float angle);
+		Transformation& world_rotate_z(float angle);
 
 		glm::mat4 model_view(glm::mat4 view, bool update = true);
 	};

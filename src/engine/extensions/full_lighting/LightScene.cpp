@@ -52,8 +52,8 @@ void LightScene::Material::apply(Shader& shader) {
 
 LightScene::SceneNode::SceneNode(Renderable* mesh, Material& material):
 	m_node(mesh), m_material(material) {
-		m_transform = new Transformation();
-	}
+	m_transform = new Transformation();
+}
 
 void LightScene::SceneNode::set_shader(Shader *shader) { m_shader = shader; }
 Shader* LightScene::SceneNode::shader() const { return m_shader; }

@@ -50,7 +50,7 @@ glm::mat4* Transformation::matrix_a(bool update) {
 }
 
 glm::vec3 Transformation::position() const { return m_position; }
-glm::quat Transformation::rotation() const { return m_rotation_q; }
+glm::quat Transformation::rotation() { return m_rotation_q; }
 glm::vec3 Transformation::rotation_euler() const { return glm::eulerAngles(m_rotation_q); }
 glm::vec3 Transformation::scale() const { return m_scale; }
 
@@ -109,27 +109,28 @@ Transformation& Transformation::forwards(glm::vec3 offset) {
 }
 
 Transformation& Transformation::forwards(float x, float y, float z) {
-	float rotationY = rotation_euler().y;
-
-	if (z != 0) {
-		m_position.x += sin(rotationY) * -z;
-		m_position.z += cos(rotationY) * z;
-	}
-
-	if (x != 0) {
-		m_position.x += sin(rotationY - M_PI_2) * -x;
-		m_position.z += cos(rotationY - M_PI_2) * x;
-	}
-
+	full_forwards(glm::vec3(x, y, z), glm::vec3(1, 0, 1));
 	m_position.y += y;
+	return *this;
+}
+
+Transformation& Transformation::full_forwards(glm::vec3 offset) {
+	m_position += glm::inverse(m_rotation_q) * offset;
+
+	return *this;
+}
+
+Transformation& Transformation::full_forwards(glm::vec3 offset, glm::vec3 axis_multiplier) {
+	glm::vec3 translation = glm::inverse(m_rotation_q) * offset;
+	m_position.x += translation.x * axis_multiplier.x;
+	m_position.y += translation.y * axis_multiplier.y;
+	m_position.z += translation.z * axis_multiplier.z;
 
 	return *this;
 }
 
 Transformation& Transformation::full_forwards(float x, float y, float z) {
-	m_position += glm::inverse(m_rotation_q) * glm::vec3(x, y, z);
-
-	return *this;
+	return full_forwards(glm::vec3(x, y, z));
 }
 
 Transformation& Transformation::relative_rotate(glm::vec3 axis, float angle) {
@@ -149,6 +150,25 @@ Transformation& Transformation::relative_rotate_y(float angle) {
 
 Transformation& Transformation::relative_rotate_z(float angle) {
 	return relative_rotate(glm::vec3(0, 0, 1.0f), angle);
+}
+
+Transformation& Transformation::world_rotate(glm::vec3 axis, float angle) {
+	glm::quat update = glm::angleAxis(angle, axis);
+	m_rotation_q = m_rotation_q * update;
+
+	return *this;
+}
+
+Transformation& Transformation::world_rotate_x(float angle) {
+	return world_rotate(glm::vec3(1.0f, 0, 0), angle);
+}
+
+Transformation& Transformation::world_rotate_y(float angle) {
+	return world_rotate(glm::vec3(0, 1.0f, 0), angle);
+}
+
+Transformation& Transformation::world_rotate_z(float angle) {
+	return world_rotate(glm::vec3(0, 0, 1.0f), angle);
 }
 
 glm::mat4 Transformation::model_view(glm::mat4 view, bool update) {
