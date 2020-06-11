@@ -16,7 +16,7 @@ public:
 		m_noise(frequency, amplitude, lacunarity, persistence), m_octaves(octaves) {}
 
 	virtual float get(int x, int y, float seed, float existing) override {
-		return m_noise.fractal(m_octaves, x, y, seed * 23934.2381);
+		return existing + m_noise.fractal(m_octaves, x, y, seed * 23934.2381);
 	}
 };
 

@@ -55,6 +55,7 @@ uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 uniform Material material;
+uniform vec3 ambientLight;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -80,8 +81,8 @@ void main() {
     // phase 3: spot light
     // result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
     
-    FragColor = vec4(result, 1.0);
-    // FragColor = vec4(1, 1, 1, 1);
+    FragColor = vec4(result + ambientLight, 1.0);
+    // FragColor = vec4(norm, 1.0);
 }
 
 vec3 diffuseColor(vec2 location) {

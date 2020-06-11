@@ -20,8 +20,9 @@ namespace PixelBit {
 			void add(TerrainLayer* layer);
 
 			float* create_height_matrix(int width, int height, float seed);
-			float* create_vertices(int width, int height, float seed);
-			void append_vbos(Mesh& mesh, int width, int height, float seed);
+
+			void append_vbos_smooth(Mesh& mesh, int width, int height, float seed);
+			void append_vbos_flat(Mesh& mesh, int width, int height, float seed);
 		};
 	};
 };

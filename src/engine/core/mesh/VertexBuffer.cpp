@@ -1,6 +1,6 @@
 #include "VertexBuffer.h"
 #include <iostream>
-
+#include <glm/glm.hpp>
 
 namespace PixelBit {
 VertexBuffer::VertexBuffer(int id, int writeMode, int type, int stride) {
@@ -57,6 +57,37 @@ int VertexBuffer::gen_id() {
 	int id;
 	glGenBuffers(1, (GLuint*) &id);
 	return id;
+}
+
+VertexBuffer& VertexBuffer::create_flat_shaded_normals(int location, float* vertices, int* indices, int indicesLength) {
+	float* normals = (float*) calloc(indicesLength * 3, sizeof(float));
+
+	for (int i = 0; i < indicesLength; i += 3) {
+		glm::vec3 verts[3] = {
+			glm::vec3(vertices[indices[i] * 3], vertices[(indices[i] * 3) + 1], vertices[(indices[i] * 3) + 2]),
+			glm::vec3(vertices[indices[i + 1] * 3], vertices[(indices[i + 1] * 3) + 1], vertices[(indices[i + 1] * 3) + 2]),
+			glm::vec3(vertices[indices[i + 2] * 3], vertices[(indices[i + 2] * 3) + 1], vertices[(indices[i + 2] * 3) + 2])
+		};
+
+		glm::vec3 e1 = verts[1] - verts[0];
+		glm::vec3 e2 = verts[2] - verts[0];
+		glm::vec3 normal = glm::cross(e1, e2);
+
+		normals[ indices[i    ] * 3     ] = normal.x;
+		normals[ indices[i + 1] * 3     ] = normal.x;
+		normals[ indices[i + 2] * 3     ] = normal.x;
+		normals[(indices[i    ] * 3) + 1] = normal.y;
+		normals[(indices[i + 1] * 3) + 1] = normal.y;
+		normals[(indices[i + 2] * 3) + 1] = normal.y;
+		normals[(indices[i    ] * 3) + 2] = normal.z;
+		normals[(indices[i + 1] * 3) + 2] = normal.z;
+		normals[(indices[i + 2] * 3) + 2] = normal.z;
+	}
+
+	VertexBuffer* buffer = new VertexBuffer(VertexBuffer::gen_id(), GL_STATIC_DRAW, GL_ARRAY_BUFFER, 1);
+	buffer->data(normals, indicesLength * 3, 3, location);
+
+	return *buffer;
 }
 
 }

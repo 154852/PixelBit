@@ -46,6 +46,12 @@ VertexBuffer& Mesh::vertex_buffer(float data[], int length, int cellLength) {
 	return *buffer;
 }
 
+VertexBuffer& Mesh::vertex_buffer(VertexBuffer& buffer) {
+	if (m_buffers.empty()) throw std::runtime_error("Indices must be the first buffer added");
+	m_buffers.push_back(&buffer);
+	return buffer;
+}
+
 void Mesh::render(glm::mat4* parent) {
 	bind();
 	glDrawElements(GL_TRIANGLES, m_vertex_count, GL_UNSIGNED_INT, 0);

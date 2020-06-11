@@ -13,7 +13,7 @@ public:
 	FlatTerrainLayer(float constant = 0): m_constant(constant) {}
 
 	virtual float get(int x, int y, float seed, float existing) override {
-		return m_constant;
+		return existing + m_constant;
 	}
 
 	float constant() const { return m_constant; };

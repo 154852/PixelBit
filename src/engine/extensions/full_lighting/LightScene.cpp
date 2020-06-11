@@ -116,12 +116,19 @@ void LightScene::Scene::add(SceneNode* mesh) { m_nodes.push_back(mesh); }
 void LightScene::Scene::add(LightScene::PointLight* light) { m_point_lights.push_back(light); }
 PerspectiveCamera* LightScene::Scene::camera() { return &m_camera; }
 
+glm::vec3 LightScene::Scene::ambient_light() const { return m_ambient_light; }
+void LightScene::Scene::set_ambient_light(glm::vec3 light) { m_ambient_light = light; }
+
+LightScene::DirectionalLight& LightScene::Scene::directional_light() { return m_directional; }
+void LightScene::Scene::set_directional_light(LightScene::DirectionalLight& light) { m_directional = light; }
+
 void LightScene::Scene::render(glm::mat4* parent) {
 	glm::mat4 newParent = parent == NULL? m_transform->matrix():((*parent) * m_transform->matrix());
 
 	m_shader->uniform("projection", m_camera.projection())
 		.uniform("view", m_camera.view(true))
-		.uniform("viewPos", m_camera.transform()->position());
+		.uniform("viewPos", m_camera.transform()->position())
+		.uniform("ambientLight", m_ambient_light);
 
 	m_directional.apply("dirLight", *m_shader);
 

@@ -102,6 +102,7 @@ namespace PixelBit {
 			std::vector<PointLight*> m_point_lights;
 			Shader* m_shader;
 			PerspectiveCamera m_camera;
+			glm::vec3 m_ambient_light {0.1f};
 		public:
 			Scene(PerspectiveCamera& camera);
 			void add(SceneNode* mesh);
@@ -110,6 +111,11 @@ namespace PixelBit {
 			virtual void render(glm::mat4* parent = NULL) override;
 
 			PerspectiveCamera* camera();
+			glm::vec3 ambient_light() const;
+			void set_ambient_light(glm::vec3 light);
+
+			DirectionalLight& directional_light();
+			void set_directional_light(DirectionalLight& light);
 		};
 	};
 };

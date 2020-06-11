@@ -30,5 +30,7 @@ namespace PixelBit {
 		static void unbind();
 
 		static int gen_id();
+
+		static VertexBuffer& create_flat_shaded_normals(int location, float* vertices, int* indices, int indicesLength);
 	};
 }
