@@ -22,7 +22,6 @@ namespace PixelBit {
 
 		VertexBuffer& indices(int data[], int length);
 		VertexBuffer& vertex_buffer(GLfloat data[], int length, int cellLength);
-		VertexBuffer& vertex_buffer(VertexBuffer& buffer);
 		virtual void render(glm::mat4* parent) override;
 
 		void bind();
