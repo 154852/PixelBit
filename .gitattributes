@@ -1,0 +1,2 @@
+src/engine/core/texture/stb_image.h linguist-vendored=true
+src/engine/extensions/loaders/OBJ_Loader.h linguist-vendored=true
