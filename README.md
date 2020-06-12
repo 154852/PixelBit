@@ -1,9 +1,15 @@
 # PixelBit, A high level C++ OpenGL wrapper
+Note that this project currently only supports MacOS (and probably linux, though this is untested)
+
+**Single line build command**
+```zsh
+g++ -lGLFW -framework OpenGL -lglew -O3 $(find src | grep .cpp) -o PixelBit.out --std=c++11
+```
 
 **Initialisation**
 ```c++
 #include <glm/glm.hpp>
-#include "../engine/PixelBit.h"
+#include "../engine/core/PixelBit.h"
 
 int main() {
 	GL& gl = PixelBit::GL::create("Hello World!"); // Window title
@@ -26,6 +32,11 @@ int main() {
 
 **Cameras**
 ```c++
+#include "../engine/extensions/camera/PerspectiveCamera.h"
+#include "../engine/extensions/camera/PixelCamera.h"
+
+...
+
 PixelBit::PerspectiveCamera camera = PixelBit::PerspectiveCamera(gl.window());
 PixelBit::PixelCamera camera = PixelBit::PixelCamera(gl.window());
 
@@ -52,11 +63,11 @@ shader.texture(textue2, 1);
 PixelBit::Transformation transformation;
 transformation.translate(0, 0, -10).rotate(degrees(90), 0, 0);
 
-transformation.scale(glm::vec3(1, 2, 1)).rotation(glm::vec3(0, PI, PI)).position(glm::vec3(10, 10, 10));
+transformation.scale(glm::vec3(1, 2, 1)).position(glm::vec3(10, 10, 10));
 
 transformation.scale(0.5); // = scale(0.5, 0.5, 0.5)
 transformation.center(gl.window()); // Pixel based center
-transformation.forwards(x, y, z); // Move forwards based on rotation
+transformation.full_forwards(x, y, z); // Move forwards based on rotation
 transformation.model_view(view_matrix); // Get modelView matrix
 ```
 
@@ -66,7 +77,7 @@ PixelBit::Shader shader = PixelBit::Shader::create("<name>", compile = true);
 shader = PixelBit::Shader::create(vertex_source, fragment_source, compile = true);
 
 // If compile was false:
-shader.compile()
+shader.compile();
 ```
 
 **Mesh**
@@ -111,4 +122,30 @@ framebuffer.draw_to([&gl, &plane_shader, &mesh]() {
 	shader.render(mesh);
 });
 postprocess_shader.render(full_screen_plane);
+```
+
+**Fully Lit Scene**
+```c++
+#include "../engine/extensions/loaders/OBJLoader.h"
+
+PixelBit::LightScene::Scene scene(perspective_camera);
+scene.directional_light().direction(0, -1, 0);
+scene.set_ambient_light(glm::vec3(0.1f));
+
+scene.add(new PixelBit::LightScene::SceneNode(&renderable, *material));
+
+scene.compile();
+
+// In render:
+scene.render();
+```
+
+**OBJ File Loading**
+```c++
+#include "../engine/extensions/loaders/OBJLoader.h"
+
+PixelBit::Loader::OBJLoader::load("path/to/model.obj", [this](PixelBit::Mesh* mesh, PixelBit::Loader::OBJLoader::OBJMaterial& material) {
+	PixelBit::LightScene::Material& mat = PixelBit::LightScene::Material::from("path/to/model-dir/", material);
+	m_scene.add(new PixelBit::LightScene::SceneNode(mesh, mat));
+});
 ```
